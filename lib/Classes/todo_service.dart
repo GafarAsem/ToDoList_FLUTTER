@@ -15,4 +15,9 @@ class ToDoService{
   saveToDo(ToDo todo) async {
     return await _repository.insertToDo('ToDo', todo.toMap());
   }
+
+  getToDo() async {
+
+    return await _repository.queryToDo('ToDo');
+  }
 }

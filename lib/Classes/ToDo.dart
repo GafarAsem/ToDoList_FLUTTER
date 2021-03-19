@@ -3,18 +3,19 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class ToDo {
-  String doItem;
   String id;
-  bool checked;
+  String doItem;
+  int checked;
+  int colorToDo;
   DateTime dateTime;
   int dayWeek;
-  Color colorToDo;
+
 
   ToDo(
       {this.doItem,
       this.colorToDo,
       this.dayWeek,
-      this.checked = false,}) {
+      this.checked = 0,}) {
     this.dateTime=DateTime.now();
     id = Uuid().v4();
     dateTime.add(new Duration(days: dayWeek - dateTime.weekday));
@@ -27,7 +28,7 @@ class ToDo {
 
     colorToDo = map['colorToDo'];
     dayWeek = map['dayWeek'];
-    dateTime = DateTime.parse(map['dateTime']);
+    //dateTime = DateTime.parse(map['dateTime']);
   }
 
   Map<String, dynamic> toMap() {

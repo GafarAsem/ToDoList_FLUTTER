@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart' as intl;
@@ -7,6 +8,7 @@ import 'package:todo_list_flutter/Classes/CustomShowDialog.dart';
 import 'package:todo_list_flutter/Classes/ToDo.dart';
 import 'package:todo_list_flutter/Classes/set_list.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:todo_list_flutter/Classes/todo_service.dart';
 import 'package:todo_list_flutter/Scenes/dialog_todo.dart';
 class HomePage extends StatefulWidget {
   @override
@@ -14,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<ToDo> todoList;
+  List<ToDo> todoList=[];
 
   List<String> days = [
     'الأثنين',
@@ -28,8 +30,9 @@ class _HomePageState extends State<HomePage> {
 
   var day=DateTime.now().weekday;
 
+
   List<Widget> getDay() {
-    todoList.removeWhere((element) => element.dayWeek!=day);
+    todoList.length>0?todoList.removeWhere((element) => element.dayWeek!=day):null;
     List<Widget> Days = [];
     for (int i = 0; i < days.length; i++) {
           bool today = day == i+1;
@@ -38,6 +41,7 @@ class _HomePageState extends State<HomePage> {
           child: GestureDetector(
             onTapDown: (_) {
               setState(() {
+                getListData();
                 day=i+1;
               });
             },
@@ -83,7 +87,7 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               height: 70,
               decoration: BoxDecoration(
-                  color: todoList[i].colorToDo,
+                  color: Color(todoList[i].colorToDo),
                   borderRadius: BorderRadius.all(Radius.circular(20))),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,19 +110,19 @@ class _HomePageState extends State<HomePage> {
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 17,
-                          color: todoList[i].checked ? Colors.grey : null,
-                          decoration: todoList[i].checked
+                          color: todoList[i].checked==1 ? Colors.grey : null,
+                          decoration: todoList[i].checked==1
                               ? TextDecoration.lineThrough
                               : null,
                           fontStyle:
-                              todoList[i].checked ? FontStyle.italic : null,
+                              todoList[i].checked==1 ? FontStyle.italic : null,
                         ),
                       ),
-                      value: todoList[i].checked,
+                      value: todoList[i].checked==1,
                       onChanged: (bool value) {
                         setState(() {
-                          value = !todoList[i].checked;
-                          todoList[i].checked = value;
+                          value = todoList[i].checked!=1;
+                          todoList[i].checked = !value?0:1;
                         });
                       },
                     ));
@@ -131,12 +135,30 @@ class _HomePageState extends State<HomePage> {
       );
     return todoes;
   }
+  var list;
+  getListData() async {
+    ToDoService _service = ToDoService();
 
+    list = await _service.getToDo();
+    print(list);
+    setState(() {
+      list.forEach((e){
+        todoList.add(ToDo.fromMap(e as Map));
+      });
+    });
+
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getListData();
+  }
   @override
   Widget build(BuildContext context) {
+
     initializeDateFormatting();
     intl.Intl.defaultLocale = 'ar';
-    todoList = getList();
     String DayandMonth = intl.DateFormat('EEEE, MMM d').format(DateTime.now());
 
     return Scaffold(
@@ -163,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                     DayandMonth,
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey,
+                      color: Colors.lightBlue.shade600,
                     ),
                   ),
                 ),
@@ -204,7 +226,8 @@ class _HomePageState extends State<HomePage> {
                 child: Container(
                   child: ListView(
                     physics: const BouncingScrollPhysics(
-                        parent: AlwaysScrollableScrollPhysics()),
+                        parent: AlwaysScrollableScrollPhysics()
+                    ),
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     children: getListDo(),

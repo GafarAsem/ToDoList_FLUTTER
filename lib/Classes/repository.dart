@@ -27,6 +27,12 @@ class Repository {
     return await connection.insert(table, toDo);
   }
 
+  queryToDo(table) async {
+    var connection =await database;
+    return await connection.query(table);
+  }
+
+
 
 
 

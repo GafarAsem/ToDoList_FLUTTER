@@ -20,10 +20,8 @@ class ToDoDialog extends StatefulWidget {
 }
 
 class _ToDoDialogState extends State<ToDoDialog> {
-
-
-  _ToDoDialogState(dayWeek){
-    dayweek=dayWeek;
+  _ToDoDialogState(dayWeek) {
+    dayweek = dayWeek;
   }
 
   List<Color> colorToDo = [
@@ -33,7 +31,6 @@ class _ToDoDialogState extends State<ToDoDialog> {
     Colors.yellow.shade200,
     Colors.grey.shade200,
   ];
-
 
   List<Widget> choiceColor() {
     List<Widget> colorElements = [];
@@ -74,7 +71,7 @@ class _ToDoDialogState extends State<ToDoDialog> {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Container(
-        height: MediaQuery.of(context).size.height - 200,
+        height: MediaQuery.of(context).size.height/5,
         child: Column(
           children: [
             TextFormField(
@@ -98,8 +95,6 @@ class _ToDoDialogState extends State<ToDoDialog> {
       ),
     );
   }
-
-
 }
 
 class DialogToDo {
@@ -112,35 +107,33 @@ class DialogToDo {
         alignment: Alignment.topRight,
         text: "إضافة مهمة",
         color: Colors.black,
-        fontSize: 14.0,
-        fontWeight: FontWeight.w500,
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
       )
       ..widget(ToDoDialog(Day))
-      ..divider()
       ..doubleButton(
-        padding: EdgeInsets.only(top: 10.0),
-        gravity: Gravity.center,
         withDivider: true,
-        text1: "تم",
-        color1: Colors.redAccent,
-        fontSize1: 14.0,
-        fontWeight1: FontWeight.bold,
-        onTap1: () {
+        gravity: Gravity.center,
+        text2: "تم",
+        color2: Colors.black,
+        fontSize2: 17.0,
+        fontWeight2: FontWeight.bold,
+        onTap2: () async {
           ToDo toDo = ToDo(
             doItem: _controller.text,
-            colorToDo: choice,
+            colorToDo: choice.value,
             dayWeek: dayweek,
           );
-          ToDoService _Service=ToDoService();
-          print(_Service.saveToDo(toDo));
+          ToDoService _Service = ToDoService();
+          print(await _Service.saveToDo(toDo));
+
         },
-        text2: "إلغاء",
-        color2: Colors.redAccent,
-        fontSize2: 14.0,
-        fontWeight2: FontWeight.bold,
-        onTap2: () {},
+        text1: "إلغاء",
+        color1: Colors.grey,
+        fontSize1: 17.0,
+        fontWeight1: FontWeight.bold,
+        onTap1: () {},
       )
       ..show();
   }
-
 }

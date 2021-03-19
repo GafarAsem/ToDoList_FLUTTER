@@ -21,10 +21,10 @@ class DataBaseConnection {
       String sqlExecute = "CREATE TABLE ToDo("
           "id TEXT PRIMARY KEY , "
           "doItem TEXT,"
-          "checked INTEGER"
+          "checked INTEGER,"
           " colorToDo INTEGER , "
           "dateTime DATETIME ,"
-          " dayWeek INTEGER , )";
+          " dayWeek INTEGER )";
       await database.execute(sqlExecute);
     }
 }
